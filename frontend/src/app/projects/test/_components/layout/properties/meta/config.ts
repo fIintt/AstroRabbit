@@ -1,0 +1,10 @@
+export const NODE_COLOR_PALETTE = {
+  BLACK: "#16161A",
+  EMERALD: "#0D9488",
+  CYAN: "#0891B2",
+  BLUE: "#2563EB",
+  PURPLE: "#7C3AED",
+  MAGENTA: "#C026D3",
+  CORAL: "#E11D48",
+  AMBER: "#D97706",
+};

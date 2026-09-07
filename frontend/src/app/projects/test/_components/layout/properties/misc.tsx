@@ -43,3 +43,11 @@ export function WidgetType({
 }) {
   return <span className="absolute -top-6 right-0 text-xs">{DATA_TYPE[type]}</span>;
 }
+
+export function WidgetError({ error }: { error: string }) {
+  return (
+    error && (
+      <span className="text-xxs text-destructive-ink line-clamp-2 font-medium italic">{error}</span>
+    )
+  );
+}

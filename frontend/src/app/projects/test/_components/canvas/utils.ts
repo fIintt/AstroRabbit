@@ -1,5 +1,7 @@
 import z from "zod";
 
+import { LucideIcon } from "lucide-react";
+
 import { ConfigFieldMeta, OutputFieldMeta } from "@/app/projects/test/_components/canvas/config";
 import { NodeData } from "@/app/projects/test/_providers/editor/config";
 
@@ -40,6 +42,10 @@ export function resolveConfigSchema(
   if ("provider" in config) return entry[String(config.provider)];
 
   return undefined;
+}
+
+export function setNodeAppearance(label: string, icon: LucideIcon): NodeData["appearance"] {
+  return { label, icon, badge: [], color: "#16161a" };
 }
 
 export function setNodeDefaults<T extends z.ZodObject>(schema: T) {

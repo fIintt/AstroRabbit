@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { useConnection, useStore } from "@xyflow/react";
 
-import { Clock, PlusSquare } from "lucide-react";
+import { Clock } from "lucide-react";
 
 import {
   STATUS_ICONS,
@@ -21,15 +21,15 @@ import { Diamond } from "@/components/ui/decorations/diamond";
 import { Shadow } from "@/components/ui/decorations/shadow";
 import { Bracket } from "@/components/ui/decorations/bracket";
 import { Badge } from "@/components/ui/primitives/badge";
-import { Button } from "@/components/ui/primitives/button";
 
 import { cn } from "@/lib/utils/cn";
 import { formatText } from "@/lib/utils/formatText";
+import { randomBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
 
 export function BaseNode({ id, type, data, selected, className, handles, configIcons }: BaseNode) {
   const [isRenaming, setIsRenaming] = useState(false);
 
-  const NodeIcon = data.icon;
+  const NodeIcon = data.appearance.icon;
   const StatusIcon = STATUS_ICONS[data.runtime.status].icon;
 
   const { action: editorAction } = useEditorAction();
@@ -44,7 +44,10 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
     (newLabel: string) => {
       if (delayRef.current) clearTimeout(delayRef.current);
 
-      delayRef.current = setTimeout(() => editorAction.patchNodeBranding(id, newLabel), 500);
+      delayRef.current = setTimeout(
+        () => editorAction.patchNodeAppearance(id, { label: newLabel }),
+        500,
+      );
     },
     [id, editorAction],
   );
@@ -52,24 +55,34 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
   return (
     <>
       <div
+        style={{
+          borderColor: `color-mix(in srgb, ${data.appearance.color} ${selectedCount > 0 && !selected ? "40%" : "100%"}, transparent)`,
+        }}
         className={cn(
           "group relative flex w-80 flex-col border-2 bg-white",
-          selectedCount > 0 && !selected && "border-ink/40 *:opacity-40",
+          selectedCount > 0 && !selected && "*:not-[.node-bg]:opacity-40",
           className,
         )}
       >
-        <Bracket className="bg-accent-ink top-0.5 right-0.5 size-8" position="top-right" />
+        <Bracket
+          style={{ backgroundColor: data.appearance.color }}
+          className="top-0.5 right-0.5 size-8"
+          position="top-right"
+        />
 
         <div className="flex w-full items-center gap-x-4 px-4 py-2">
           <div className="relative flex size-8 shrink-0 items-center justify-center">
-            <Diamond variant="filled" className="bg-ink/5 absolute inset-0 size-8" />
+            <Diamond
+              style={{ borderColor: data.appearance.color }}
+              className="absolute inset-0 size-8"
+            />
 
-            <NodeIcon className="text-ink relative z-10 size-5" />
+            <NodeIcon style={{ color: data.appearance.color }} className="z-10 size-5" />
           </div>
 
           <div className="flex w-full min-w-0 flex-col">
             <NodeLabel
-              label={data.label}
+              label={data.appearance.label}
               isRenaming={isRenaming}
               onRenamingChange={setIsRenaming}
               onChange={onLabelChange}
@@ -89,34 +102,26 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
               }}
               className="nowheel flex w-full scrollbar-none items-center gap-x-2 overflow-x-auto"
             >
-              <Badge color="accent">{formatText(type)}</Badge>
+              <Badge size="sm" className={randomBadgeColor(formatText(type))}>
+                {formatText(type)}
+              </Badge>
 
-              {data.badge.length > 0 &&
-                data.badge.map((badge) => {
-                  return (
-                    <Badge
-                      key={`${id}-badge`}
-                      title={badge}
-                      className="group-hover/badge:opacity-30"
-                      color="accent"
-                    >
-                      {badge}
-                    </Badge>
-                  );
-                })}
-
-              <Button
-                aria-label="Add badge"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                size="icon"
-                className="nodrag nopan p-0"
-              >
-                <PlusSquare size={16} className="active:bg-accent-ink" />
-              </Button>
+              {data.appearance.badge.map((badge) => {
+                return (
+                  <Badge key={`${id}-badge`} size="sm" title={badge} color="accent">
+                    {badge}
+                  </Badge>
+                );
+              })}
             </div>
           </div>
+
+          <div
+            style={{
+              backgroundColor: `color-mix(in srgb, ${data.appearance.color} 4%, transparent)`,
+            }}
+            className="absolute inset-0 z-1 bg-white"
+          />
         </div>
 
         <div
@@ -128,9 +133,20 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
           )}
         >
           <div className="overflow-hidden">
-            <div className="border-ink/20 relative flex w-full flex-col items-start gap-y-2 border-t-2 border-dashed p-2">
+            <div
+              style={{
+                borderColor: `color-mix(in srgb, ${data.appearance.color} 20%, transparent)`,
+              }}
+              className="relative flex w-full flex-col items-start gap-y-2 border-t-2 border-dashed p-2"
+            >
               {getVisibleConfigs(type, data.config).map(([key, value]) => {
-                const Icon = configIcons[formatText(key).toUpperCase()];
+                const Icon =
+                  configIcons[
+                    key
+                      .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+                      .replace(/[-\s]+/g, "_")
+                      .toUpperCase()
+                  ];
 
                 const formattedValue =
                   typeof value === "object" && value !== null ? toJSON(value) : toString(value);
@@ -151,7 +167,12 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
           </div>
         </div>
 
-        <div className="border-ink/20 flex w-full items-center justify-between gap-x-2 border-t-2 border-dashed p-2">
+        <div
+          style={{
+            borderColor: `color-mix(in srgb, ${data.appearance.color} 20%, transparent)`,
+          }}
+          className="flex w-full items-center justify-between gap-x-2 border-t-2 border-dashed p-2"
+        >
           <div className="flex items-center justify-between gap-x-2">
             <Clock size={12} strokeWidth={2} className="text-ink/40" />
 

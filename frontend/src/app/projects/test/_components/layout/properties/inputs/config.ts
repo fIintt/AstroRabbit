@@ -20,21 +20,25 @@ export type ConfigWidget = {
 
   RECORD: {
     value: Record<string, unknown>;
+    error: string;
     onChange: (v: Record<string, unknown>) => void;
   };
 
   TEXT: {
     value: string;
+    error: string;
     onChange: (v: string) => void;
   };
 
   NUMBER: {
     value: number;
+    error: string;
     onChange: (v: number) => void;
   };
 
   JSON: {
     value: string;
+    error: string;
     onChange: (v: string) => void;
   };
 };

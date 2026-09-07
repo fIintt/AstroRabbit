@@ -11,37 +11,6 @@ export function createNode<T extends CanvasNode>(type: T["type"]): CreateNode<T>
   } as CreateNode<T>;
 }
 
-export function patchBadge<T extends CanvasNode>(
-  node: T,
-  method: "CREATE" | "DELETE",
-  badge: string,
-): T {
-  switch (method) {
-    case "CREATE":
-      return {
-        ...node,
-        data: {
-          ...node.data,
-          badge: Array.from(
-            new Set([...node.data.badge.map((b) => b.trim()), badge.trim()].filter(Boolean)),
-          ),
-        },
-      };
-
-    case "DELETE":
-      return {
-        ...node,
-        data: {
-          ...node.data,
-          badge: node.data.badge.filter((b) => b !== badge),
-        },
-      };
-
-    default:
-      return node;
-  }
-}
-
 export function patchNode<T extends CanvasNode, K extends keyof T["data"]>(
   node: T,
   patch: Pick<T["data"], K>,

@@ -36,19 +36,21 @@ function editorActions(dispatch: React.Dispatch<ActionEditor>) {
 
     selectTool: (toolId: ToolboxItem["id"]) => dispatch({ type: "SELECT_TOOL", payload: toolId }),
 
-    patchBadge: (nodeId: string, method: "CREATE" | "DELETE", badge: string) =>
-      dispatch({ type: "PATCH_BADGE", payload: { nodeId, method, badge } }),
-
     createNode: (type: CanvasNode["type"]) => dispatch({ type: "CREATE_NODE", payload: type }),
 
     changeNode: (changes: NodeChange<CanvasNode>[]) =>
       dispatch({ type: "CHANGE_NODE", payload: changes }),
 
-    patchNodeBranding: (nodeId: string, label: string, icon?: LucideIcon) =>
-      dispatch({ type: "PATCH_NODE_BRANDING", payload: { id: nodeId, label, icon } }),
+    patchNodeAppearance: (
+      nodeId: string,
+      appearance: Partial<Omit<NodeData["appearance"], "icon">>,
+    ) => dispatch({ type: "PATCH_NODE_APPEARANCE", payload: { id: nodeId, appearance } }),
 
     patchNodeConfig: (nodeId: string, key: string, value: unknown) =>
       dispatch({ type: "PATCH_NODE_CONFIG", payload: { id: nodeId, key, value } }),
+
+    setNodeConfig: (nodeId: string, config: NodeData["config"]) =>
+      dispatch({ type: "SET_NODE_CONFIG", payload: { id: nodeId, config } }),
 
     patchNodeExecution: (
       nodeId: string,

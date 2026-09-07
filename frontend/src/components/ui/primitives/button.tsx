@@ -19,9 +19,8 @@ const hoverInsetStyles = {
 
 const styles = cva(
   [
-    "relative inline-flex cursor-pointer items-center justify-center",
+    "relative inline-flex cursor-pointer select-none items-center justify-center",
     "hover:text-ink active:scale-[0.98]",
-    "transition-[color,background-color,border-color,opacity,scale] duration-200",
     "disabled:text-ink disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none",
   ],
 
@@ -34,9 +33,9 @@ const styles = cva(
       },
 
       size: {
-        sm: "px-2 py-1 text-[10px]/none",
-        md: "px-2.5 py-1.5 text-[12px]/none",
-        lg: "px-3 py-2 text-[14px]/none",
+        sm: "px-1.5 py-1 text-xxs",
+        md: "px-2 py-1.5 text-xs",
+        lg: "px-2.5 py-2 text-sm",
         icon: "p-1.5 text-ink/40",
       },
 
@@ -49,13 +48,19 @@ const styles = cva(
         true: "group/btn",
         false: "",
       },
+
+      animated: {
+        true: "transition-[color,background-color,border-color,opacity,scale] duration-200",
+        false: "",
+      },
     },
 
     defaultVariants: {
       variant: "normal",
-      size: "sm",
+      size: "md",
       flush: false,
       brackets: false,
+      animated: false
     },
   },
 );
@@ -93,6 +98,7 @@ function extract<T extends ButtonProps>({
   hoverInset,
   flush,
   brackets,
+  animated,
   className,
   ...props
 }: T) {
@@ -106,7 +112,8 @@ function extract<T extends ButtonProps>({
       {brackets && (
         <div
           className={cn(
-            "absolute inset-0 transition-[inset] duration-100",
+            "absolute inset-0",
+            animated && "transition-[inset] duration-200",
             hoverInsetStyles[hoverInset ?? safeSize],
           )}
         >

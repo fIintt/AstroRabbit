@@ -8,13 +8,7 @@ import {
   CanvasNode,
   InitialEditor,
 } from "@/app/projects/test/_providers/editor/config";
-import {
-  createNode,
-  patchBadge,
-  patchEdge,
-  patchNode,
-} from "@/app/projects/test/_providers/editor/utils";
-import { setNodeDefaults } from "@/app/projects/test/_components/canvas/utils";
+import { createNode, patchEdge, patchNode } from "@/app/projects/test/_providers/editor/utils";
 import { NODE_DEFAULTS } from "@/app/projects/test/_components/canvas/config";
 
 export const initialEditor: InitialEditor = {
@@ -43,16 +37,6 @@ export const actionEditor = (state: InitialEditor, action: ActionEditor): Initia
         tool: action.payload,
       };
 
-    case "PATCH_BADGE":
-      return {
-        ...state,
-        nodes: state.nodes.map((node) =>
-          node.id === action.payload.nodeId
-            ? patchBadge(node, action.payload.method, action.payload.badge)
-            : node,
-        ),
-      };
-
     case "CREATE_NODE":
       return {
         ...state,
@@ -72,16 +56,18 @@ export const actionEditor = (state: InitialEditor, action: ActionEditor): Initia
       };
     }
 
-    case "PATCH_NODE_BRANDING":
+    case "PATCH_NODE_APPEARANCE":
       return {
         ...state,
         nodes: state.nodes.map((node) => {
           if (node.id !== action.payload.id) return node;
 
-          if (action.payload.icon)
-            return patchNode(node, { label: action.payload.label, icon: action.payload.icon });
-
-          return patchNode(node, { label: action.payload.label });
+          return patchNode(node, {
+            appearance: {
+              ...node.data.appearance,
+              ...action.payload.appearance,
+            },
+          });
         }),
       };
 
@@ -97,6 +83,16 @@ export const actionEditor = (state: InitialEditor, action: ActionEditor): Initia
               [action.payload.key]: action.payload.value,
             },
           });
+        }),
+      };
+
+    case "SET_NODE_CONFIG":
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== action.payload.id) return node;
+
+          return patchNode(node, { config: action.payload.config });
         }),
       };
 

@@ -1,10 +1,10 @@
 import React from "react";
 
 import { Diamond } from "@/components/ui/decorations/diamond";
+import { Bracket } from "@/components/ui/decorations/bracket";
 
 import { cn } from "@/lib/utils/cn";
 import { cva, type VariantProps } from "@/lib/utils/cva";
-import { Bracket } from "@/components/ui/decorations/bracket";
 
 const styles = cva(
   "pointer-events-none absolute border-current z-50 border-2 select-none",

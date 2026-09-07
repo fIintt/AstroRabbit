@@ -6,6 +6,7 @@ import { ConfigWidget } from "@/app/projects/test/_components/layout/properties/
 import { WidgetType } from "@/app/projects/test/_components/layout/properties/misc";
 
 import { Button } from "@/components/ui/primitives/button";
+import { Shadow } from "@/components/ui/decorations/shadow";
 
 import { cn } from "@/lib/utils/cn";
 import { formatText } from "@/lib/utils/formatText";
@@ -32,8 +33,7 @@ export function SelectInput({ value, options, onChange }: ConfigWidget["SELECT"]
     <div ref={dropdownRef} className="relative">
       <Button
         onClick={() => setIsOpen((prev) => !prev)}
-        size="md"
-        className="bg-ink/2 text-ink w-full justify-between py-2 hover:outline focus:outline"
+        className="bg-ink/4 text-ink w-full justify-between py-2 hover:outline focus:outline"
       >
         <span>{formatText(chosen)}</span>
 
@@ -41,26 +41,30 @@ export function SelectInput({ value, options, onChange }: ConfigWidget["SELECT"]
       </Button>
 
       {isOpen && (
-        <ul className="absolute z-10 mt-px max-h-60 w-full overflow-auto bg-white shadow-lg outline focus:outline-none">
-          {options.map((option) => (
-            <li
-              tabIndex={0}
-              key={option}
-              onClick={() => {
-                setChosen(option);
-                onChange(option);
-                setIsOpen(false);
-              }}
-              className="hover:bg-ink/2 flex cursor-pointer items-center justify-between p-2"
-            >
-              <span className={option === chosen ? "text-accent-ink font-bold" : "text-ink"}>
-                {formatText(option)}
-              </span>
+        <div className="absolute z-10 mt-1 max-h-60 w-full outline focus:outline-none">
+          <div className="bg-white">
+            {options.map((option) => (
+              <Button
+                tabIndex={0}
+                key={option}
+                onClick={() => {
+                  setChosen(option);
+                  onChange(option);
+                  setIsOpen(false);
+                }}
+                className="hover:bg-ink/4 w-full justify-between bg-white py-2"
+              >
+                <span className={option === chosen ? "text-accent-ink font-bold" : "text-ink"}>
+                  {formatText(option)}
+                </span>
 
-              {option === chosen && <CheckCheck size={16} className="text-accent-ink" />}
-            </li>
-          ))}
-        </ul>
+                {option === chosen && <CheckCheck size={16} className="text-accent-ink" />}
+              </Button>
+            ))}
+          </div>
+
+          <Shadow spread={8} />
+        </div>
       )}
 
       <WidgetType type="SELECT" />

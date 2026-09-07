@@ -10,11 +10,12 @@ const ICONS = {
   HEADERS: List,
   METHOD: Code2,
   BODY: FileText,
-  URL: Link2,
 
   LATENCY: ClockFading,
   STATUS_CODE: Hash,
   FAILURE_RATE: TrendingDown,
+
+  URL: Link2,
 } as const;
 
 export function HttpRequestNode(node: NodeProps<HttpRequest>) {

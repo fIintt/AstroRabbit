@@ -3,7 +3,7 @@
 @theme {
   /*
   Icons: opacity-40 (e.g text-ink/40)
-  Backgrounds: opacity-2 (e.g Input background: bg-ink/2)
+  Backgrounds: opacity-4 (e.g Input background: bg-ink/4) *Badge's backgrounds must be opacity-10 (exception)
   Dividers: opacity-20 (e.g border-ink/20)
   */
   --color-ink: #16161a;
@@ -13,6 +13,9 @@
   --color-success-ink: #15803d;
   --color-destructive-ink: #d7294f;
   --color-warning-ink: #d97706;
+
+  --text-xxs: 0.625rem;
+  --text-xxs--line-height: calc(0.75 / 0.625);
 
   --font-headline: var(--font-headline);
 }

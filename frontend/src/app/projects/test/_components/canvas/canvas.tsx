@@ -30,6 +30,7 @@ import { MainFrame } from "@/components/layout/main-frame";
 
 export function Canvas() {
   const { getNode } = useReactFlow();
+
   const { action: editorAction } = useEditorAction();
   const { state: editorState } = useEditorState();
 

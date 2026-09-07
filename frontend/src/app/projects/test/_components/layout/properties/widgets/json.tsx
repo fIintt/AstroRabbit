@@ -4,11 +4,11 @@ import { Check, Copy } from "lucide-react";
 
 import { ConfigWidget } from "@/app/projects/test/_components/layout/properties/inputs/config";
 import { OutputWidget } from "@/app/projects/test/_components/layout/properties/outputs/config";
-import { WidgetType } from "@/app/projects/test/_components/layout/properties/misc";
+import { WidgetError, WidgetType } from "@/app/projects/test/_components/layout/properties/misc";
 
 import { Button } from "@/components/ui/primitives/button";
 
-export function JsonInput({ value, onChange }: ConfigWidget["JSON"]) {
+export function JsonInput({ value, error, onChange }: ConfigWidget["JSON"]) {
   const [text, setText] = useState(value);
   const [copied, setCopied] = useState(false);
 
@@ -19,7 +19,7 @@ export function JsonInput({ value, onChange }: ConfigWidget["JSON"]) {
       setText(JSON.stringify(parsed, null, 2));
       onChange(parsed);
     } catch {
-      console.log("Invalid JSON format - Cannot prettify");
+      error = "Invalid JSON format - Cannot prettify";
     }
   };
 
@@ -33,7 +33,7 @@ export function JsonInput({ value, onChange }: ConfigWidget["JSON"]) {
   useEffect(() => setText(value), [value]);
 
   return (
-    <div className="group bg-ink/5 relative focus-within:outline hover:outline">
+    <div className="group bg-ink/4 relative focus-within:outline hover:outline">
       <Button
         size="icon"
         aria-label="Copy"
@@ -46,13 +46,15 @@ export function JsonInput({ value, onChange }: ConfigWidget["JSON"]) {
       </Button>
 
       <textarea
-        value={text || "{}"}
+        value={text}
         onChange={(e) => setText(e.target.value)}
         onBlur={(e) => onFormat(e.target.value)}
         placeholder="Value"
         spellCheck={false}
         className="custom-scroll text-ink field-sizing-content size-full max-h-80 min-h-20 resize-none overflow-x-hidden overflow-y-auto p-2 pr-8 outline-none"
       />
+
+      <WidgetError error={error} />
 
       <WidgetType type="JSON" />
     </div>
@@ -70,7 +72,7 @@ export function JsonOutput({ value }: OutputWidget["JSON"]) {
   };
 
   return (
-    <div className="bg-ink/2 relative focus-within:outline">
+    <div className="bg-ink/4 relative focus-within:outline">
       <Button
         size="icon"
         aria-label="Copy"

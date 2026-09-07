@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useEdges, useNodes, useReactFlow } from "@xyflow/react";
+import { useEdges, useNodes } from "@xyflow/react";
 
 import { Title } from "@/app/projects/test/_components/layout/properties/misc";
 import { CanvasEdge, CanvasNode } from "@/app/projects/test/_providers/editor/config";
@@ -19,13 +19,13 @@ type Display = {
 };
 
 function Display({ node, siblingType }: Display) {
-  const Icon = node.data.icon;
+  const Icon = node.data.appearance.icon;
 
   return (
     <div key={node.id} className="bg-ink/2 flex items-center justify-between gap-x-2 p-2">
       <Icon size={16} className="text-ink/40" />
 
-      <span className="text-ink mr-auto min-w-0 truncate">{node.data.label}</span>
+      <span className="text-ink mr-auto min-w-0 truncate">{node.data.appearance.label}</span>
 
       <Badge
         className={cn(
@@ -34,7 +34,6 @@ function Display({ node, siblingType }: Display) {
             ? "bg-indigo-500/10 text-indigo-600"
             : "bg-violet-500/10 text-violet-600",
         )}
-        size="md"
       >
         {siblingType}
       </Badge>

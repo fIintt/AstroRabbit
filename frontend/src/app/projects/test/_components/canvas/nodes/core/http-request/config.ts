@@ -6,11 +6,43 @@ import { Base } from "@/app/projects/test/_components/canvas/nodes/base/config";
 import { withOutputMeta, withConfigMeta } from "@/app/projects/test/_components/canvas/utils";
 
 const HTTP_METHOD = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"] as const;
-const HEADERS = { KEY: { MAX: 256 }, VALUE: { MAX: 8192 }, DEFAULT: {} } as const;
-const URL = { MAX: 2048, DEFAULT: "https://httpbingo.org/get" } as const;
-const STATUS_CODE = { MIN: 100, MAX: 599, DEFAULT: 200 } as const;
-const LATENCY = { MIN: 0, MAX: 10, DEFAULT: 0 } as const;
-const FAILURE_RATE = { MIN: 0, MAX: 100, DEFAULT: 0 } as const;
+
+const HEADERS = {
+  KEY: {
+    MAX: 256,
+  },
+  VALUE: {
+    MAX: 8192,
+  },
+  DEFAULT: {},
+} as const;
+
+const BODY = {
+  DEFAULT: { message: "Hello World" },
+};
+
+const URL = {
+  MAX: 2048,
+  DEFAULT: "https://httpbingo.org/get",
+} as const;
+
+const STATUS_CODE = {
+  MIN: 100,
+  MAX: 599,
+  DEFAULT: 200,
+} as const;
+
+const LATENCY = {
+  MIN: 0,
+  MAX: 10,
+  DEFAULT: 0,
+} as const;
+
+const FAILURE_RATE = {
+  MIN: 0,
+  MAX: 100,
+  DEFAULT: 0,
+} as const;
 
 const commonConfig = z.object({
   headers: withConfigMeta(
@@ -25,7 +57,7 @@ const commonConfig = z.object({
     widget: "SELECT",
     options: HTTP_METHOD,
   }),
-  body: withConfigMeta(z.json().default({ message: "Hello World" }), {
+  body: withConfigMeta(z.json().default(BODY.DEFAULT), {
     widget: "JSON",
     hiddenWhen: (config) => ["GET", "DELETE", "HEAD"].includes(String(config.method)),
   }),
@@ -62,7 +94,9 @@ const customConfig = z.object({
 
   ...commonConfig.shape,
 
-  url: withConfigMeta(z.url().max(URL.MAX).default(URL.DEFAULT), { widget: "TEXT" }),
+  url: withConfigMeta(z.url().max(URL.MAX).default(URL.DEFAULT), {
+    widget: "TEXT",
+  }),
 });
 
 const output = z.object({

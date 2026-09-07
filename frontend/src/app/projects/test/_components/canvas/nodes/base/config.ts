@@ -66,9 +66,12 @@ export type Base<
   Config extends Record<string, unknown> = Record<string, unknown>,
   Output extends Record<string, unknown> = Record<string, unknown>,
 > = {
-  label: string;
-  icon: LucideIcon;
-  badge: string[];
+  appearance: {
+    label: string;
+    icon: LucideIcon;
+    badge: string[];
+    color: string;
+  };
 
   config: Config;
 

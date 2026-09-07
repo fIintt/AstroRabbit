@@ -12,10 +12,8 @@ import { cn } from "@/lib/utils/cn";
 export function MultiSelectInput({ value, options, onChange }: ConfigWidget["MULTI_SELECT"]) {
   const [chosen, setChosen] = useState<string[]>(value);
 
-  const onSelect = (option: string) => {
-    const updated = chosen.includes(option)
-      ? chosen.filter((item) => item !== option)
-      : [...chosen, option];
+  const onSelect = (v: string) => {
+    const updated = chosen.includes(v) ? chosen.filter((item) => item !== v) : [...chosen, v];
 
     setChosen(updated);
     onChange(updated);
@@ -32,11 +30,10 @@ export function MultiSelectInput({ value, options, onChange }: ConfigWidget["MUL
           <Button
             key={i} // option isnt guaranteed to be unique
             onClick={() => onSelect(option)}
-            size="md"
             variant="border"
             className={cn(
               "w-full border-none py-2 outline outline-dashed",
-              isChosen && "text-ink bg-ink/2 outline-solid",
+              isChosen && "text-ink bg-ink/4 outline-solid",
             )}
           >
             <span>{option}</span>

@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import z from "zod";
 
 import {
   CONFIG_SCHEMA_TYPES,
@@ -27,19 +29,20 @@ import { cn } from "@/lib/utils/cn";
 import { formatText } from "@/lib/utils/formatText";
 
 type PropertiesInputs = {
-  nodeId: string;
   nodeType: CanvasNode["type"];
   config: NodeData["config"];
-  onPatch: (nodeId: string, k: string, v: unknown) => void;
+  onPatch: (key: string, value: unknown) => void;
+  onSet: (value: NodeData["config"]) => void;
 };
 
 type Widget = {
   meta: ConfigFieldMeta;
+  error: string;
   value: unknown;
-  onChange: (v: unknown) => void;
+  onChange: (value: unknown) => void;
 };
 
-function Widget({ meta, value, onChange }: Widget) {
+function Widget({ meta, value, error, onChange }: Widget) {
   switch (meta.widget) {
     case "SELECT":
       return (
@@ -60,38 +63,83 @@ function Widget({ meta, value, onChange }: Widget) {
       );
 
     case "RECORD":
-      return <CONFIG_WIDGET_TYPES.RECORD value={toObject(value)} onChange={onChange} />;
+      return (
+        <CONFIG_WIDGET_TYPES.RECORD value={toObject(value)} error={error} onChange={onChange} />
+      );
 
     case "TEXT":
-      return <CONFIG_WIDGET_TYPES.TEXT value={toString(value)} onChange={onChange} />;
+      return <CONFIG_WIDGET_TYPES.TEXT value={toString(value)} error={error} onChange={onChange} />;
 
     case "NUMBER":
-      return <CONFIG_WIDGET_TYPES.NUMBER value={toNumber(value)} onChange={onChange} />;
+      return (
+        <CONFIG_WIDGET_TYPES.NUMBER value={toNumber(value)} error={error} onChange={onChange} />
+      );
 
     case "JSON":
-      return <CONFIG_WIDGET_TYPES.JSON value={toJSON(value)} onChange={onChange} />;
+      return <CONFIG_WIDGET_TYPES.JSON value={toJSON(value)} error={error} onChange={onChange} />;
   }
 }
 
-export function PropertiesInputs({ nodeId, nodeType, config, onPatch }: PropertiesInputs) {
-  const schema = resolveConfigSchema(CONFIG_SCHEMA_TYPES[nodeType], config);
+export function PropertiesInputs({ nodeType, config, onPatch, onSet }: PropertiesInputs) {
+  const entry = CONFIG_SCHEMA_TYPES[nodeType];
+  const schema = resolveConfigSchema(entry, config);
 
   if (!schema) return null;
 
-  const delayRef = useRef<NodeJS.Timeout | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const delayRef = useRef<Record<string, NodeJS.Timeout>>({});
 
   const onChange = useCallback(
-    (key: string, value: unknown) => {
-      if (delayRef.current) clearTimeout(delayRef.current);
+    (field: z.ZodType, k: string, v: unknown) => {
+      const timer = delayRef.current[k];
 
-      delayRef.current = setTimeout(() => onPatch(nodeId, key, value), 500);
+      if (timer) clearTimeout(timer);
+
+      const timeout = setTimeout(() => {
+        if (k === "provider" && !(entry instanceof z.ZodObject)) {
+          const nextSchema = entry[String(v)];
+
+          if (!nextSchema) return null;
+
+          const merge = nextSchema.safeParse({ ...config, provider: v });
+
+          const newConfig = merge.success
+            ? { ...config, ...merge.data }
+            : nextSchema.parse({ provider: v });
+
+          setErrors({});
+          // Safe to assert, nextSchema was resolved from nodeType
+          onSet(newConfig as NodeData["config"]);
+
+          return;
+        }
+
+        const res = field.safeParse(v);
+
+        if (!res.success)
+          return setErrors((prev) => ({
+            ...prev,
+            [k]: res.error.issues[0].message,
+          }));
+
+        setErrors((prev) => {
+          const next = { ...prev };
+
+          delete next[k];
+          return next;
+        });
+        onPatch(k, res.data);
+      }, 500);
+
+      delayRef.current[k] = timeout;
     },
-    [nodeId, onPatch],
+    [entry, config, onPatch, onSet],
   );
 
   useEffect(() => {
     return () => {
-      if (delayRef.current) clearTimeout(delayRef.current);
+      for (const timeout of Object.values(delayRef.current)) clearTimeout(timeout);
     };
   }, []);
 
@@ -111,14 +159,13 @@ export function PropertiesInputs({ nodeId, nodeType, config, onPatch }: Properti
             <div key={key} className="relative space-y-2 pl-4">
               <Diamond borderColor="black" className="absolute top-1.25 left-0" />
 
-              <Badge className={cn("border-0", randomBadgeColor(key))} size="md">
-                {formatText(key)}
-              </Badge>
+              <Badge className={cn("border-0", randomBadgeColor(key))}>{formatText(key)}</Badge>
 
               <Widget
                 meta={meta}
+                error={errors[key]}
                 value={(config as Record<string, unknown>)[key]}
-                onChange={(v) => onChange(key, v)}
+                onChange={(v) => onChange(fieldSchema, key, v)}
               />
             </div>
           );

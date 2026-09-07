@@ -27,8 +27,8 @@ function sameRows(a: Record<string, unknown>, b: Record<string, unknown>) {
   return aKeys.every((k) => a[k] === b[k]);
 }
 
-function toRows(value: Record<string, unknown>): Row[] {
-  return Object.entries(value).map(([k, v]) => ({
+function toRows(obj: Record<string, unknown>): Row[] {
+  return Object.entries(obj).map(([k, v]) => ({
     id: nanoid(),
     key: k,
     value: String(v ?? ""),
@@ -91,14 +91,14 @@ export function RecordInput({ value, onChange }: ConfigWidget["RECORD"]) {
               placeholder="Key"
               value={r.key}
               onChange={(e) => onRowChange(r.id, "key", e.target.value)}
-              className="bg-ink/2 text-ink min-w-20 flex-1 p-2 hover:outline focus:outline"
+              className="bg-ink/4 text-ink min-w-20 flex-1 p-2 hover:outline focus:outline"
             />
 
             <input
               placeholder="Value"
               value={r.value}
               onChange={(e) => onRowChange(r.id, "value", e.target.value)}
-              className="bg-ink/2 text-ink min-w-20 flex-1 p-2 hover:outline focus:outline"
+              className="bg-ink/4 text-ink min-w-20 flex-1 p-2 hover:outline focus:outline"
             />
 
             <Button
@@ -123,7 +123,7 @@ export function RecordInput({ value, onChange }: ConfigWidget["RECORD"]) {
         );
       })}
 
-      <Button onClick={onAddRow} size="md" variant="border" className="w-full border py-1">
+      <Button onClick={onAddRow} variant="border" className="w-full border py-1">
         <Plus className="size-4" />
       </Button>
 
@@ -142,13 +142,13 @@ export function RecordOutput({ value }: OutputWidget["RECORD"]) {
           <input
             readOnly
             placeholder="Key"
-            className="bg-ink/2 text-ink min-w-20 flex-1 p-2 outline-none"
+            className="bg-ink/4 text-ink min-w-20 flex-1 p-2 outline-none"
           />
 
           <input
             readOnly
             placeholder="Value"
-            className="bg-ink/2 text-ink min-w-20 flex-1 p-2 outline-none"
+            className="bg-ink/4 text-ink min-w-20 flex-1 p-2 outline-none"
           />
         </div>
       ) : (
@@ -157,14 +157,14 @@ export function RecordOutput({ value }: OutputWidget["RECORD"]) {
             <input
               readOnly
               value={key}
-              className="bg-ink/2 text-ink min-w-20 flex-1 p-2 outline-none"
+              className="bg-ink/4 text-ink min-w-20 flex-1 p-2 outline-none"
             />
 
             <input
               readOnly
               value={String(value ?? "")}
               placeholder="Value"
-              className="bg-ink/2 text-ink min-w-20 flex-1 p-2 outline-none"
+              className="bg-ink/4 text-ink min-w-20 flex-1 p-2 outline-none"
             />
           </div>
         ))

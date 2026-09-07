@@ -84,12 +84,12 @@ export function Properties() {
                 <PropertiesBanner
                   nodeId={node.id}
                   type={node.type}
-                  icon={node.data.icon}
-                  label={node.data.label}
+                  icon={node.data.appearance.icon}
+                  label={node.data.appearance.label}
                   nodeStatus={node.data.runtime.status}
                   executorStatus={executorState.status}
                   onClose={() => setIsOpen(false)}
-                  onLabelChange={(v) => editorAction.patchNodeBranding(node.id, v)}
+                  onLabelChange={(v) => editorAction.patchNodeAppearance(node.id, { label: v })}
                   onExecute={execution.execute}
                   onNodeSkip={currentNode.skip}
                   onDelete={editorAction.deleteNode}
@@ -99,15 +99,24 @@ export function Properties() {
                   <PropertiesConnections nodeId={node.id} />
 
                   <PropertiesInputs
-                    nodeId={node.id}
                     nodeType={node.type}
                     config={node.data.config}
-                    onPatch={editorAction.patchNodeConfig}
+                    onPatch={(k, v) => editorAction.patchNodeConfig(node.id, k, v)}
+                    onSet={(v) => editorAction.setNodeConfig(node.id, v)}
                   />
 
                   <PropertiesOutputs nodeType={node.type} output={node.data.output} />
 
-                  <PropertiesMeta nodeId={node.id} runtime={node.data.runtime} />
+                  <PropertiesMeta
+                    onAppearanceChange={(c) =>
+                      editorAction.patchNodeAppearance(node.id, { color: c })
+                    }
+                    appearance={node.data.appearance}
+                    runtime={node.data.runtime}
+                  />
+
+                  {/* Bottom padding (cant use margin or padding on the parent as the overflow-hidden screws it up) */}
+                  <div aria-hidden="true" className="pointer-events-none opacity-0 select-none" />
                 </div>
               </div>
             ) : (

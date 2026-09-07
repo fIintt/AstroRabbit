@@ -70,7 +70,7 @@ export function PropertiesBanner({
     <div className="flex flex-col items-center">
       <div className="border-ink/20 flex w-full items-center gap-x-4 border-b-2 border-dashed px-6 py-4">
         <div className="relative flex size-8 shrink-0 items-center justify-center">
-          <Diamond variant="filled" className="bg-ink/5 absolute inset-0 size-8" />
+          <Diamond variant="filled" className="bg-ink/4 absolute inset-0 size-8" />
 
           <NodeIcon className="text-ink relative z-10 size-5" />
         </div>
@@ -89,9 +89,7 @@ export function PropertiesBanner({
             />
           </div>
 
-          <Badge size="md" color="accent">
-            {formatText(type)}
-          </Badge>
+          <Badge color="accent">{formatText(type)}</Badge>
         </div>
 
         <Button
@@ -114,7 +112,6 @@ export function PropertiesBanner({
           return (
             <Button
               key={k}
-              size="md"
               variant={isDestructive ? "destructive" : "normal"}
               flush
               disabled={v.disabled}

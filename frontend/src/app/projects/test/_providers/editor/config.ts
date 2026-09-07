@@ -39,11 +39,14 @@ export type InitialEditor = {
 export type ActionEditor =
   | { type: "RESET_RUNTIME" }
   | { type: "SELECT_TOOL"; payload: ToolboxItem["id"] }
-  | { type: "PATCH_BADGE"; payload: { nodeId: string; method: "CREATE" | "DELETE"; badge: string } }
   | { type: "CREATE_NODE"; payload: CanvasNode["type"] }
   | { type: "CHANGE_NODE"; payload: NodeChange<CanvasNode>[] }
-  | { type: "PATCH_NODE_BRANDING"; payload: { id: string; label: string; icon?: LucideIcon } }
+  | {
+      type: "PATCH_NODE_APPEARANCE";
+      payload: { id: string; appearance: Partial<Omit<NodeData["appearance"], "icon">> };
+    }
   | { type: "PATCH_NODE_CONFIG"; payload: { id: string; key: string; value: unknown } }
+  | { type: "SET_NODE_CONFIG"; payload: { id: string; config: NodeData["config"] } }
   | {
       type: "PATCH_NODE_EXECUTION";
       payload: { id: string; runtime: NodeData["runtime"]; output?: NodeData["output"] };

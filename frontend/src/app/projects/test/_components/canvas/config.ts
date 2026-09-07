@@ -5,7 +5,7 @@ import { Database, Globe } from "lucide-react";
 import { CanvasNode, NodeData } from "@/app/projects/test/_providers/editor/config";
 import { DATABASE_SCHEMAS } from "@/app/projects/test/_components/canvas/nodes/core/database/config";
 import { HTTP_REQUEST_SCHEMAS } from "@/app/projects/test/_components/canvas/nodes/core/http-request/config";
-import { setNodeDefaults } from "@/app/projects/test/_components/canvas/utils";
+import { setNodeAppearance, setNodeDefaults } from "@/app/projects/test/_components/canvas/utils";
 
 export const SETTINGS: Record<
   CanvasNode["type"],
@@ -33,20 +33,14 @@ export const NODE_DEFAULTS: {
   [K in CanvasNode["type"]]: Extract<CanvasNode, { type: K }>["data"];
 } = {
   HTTP_REQUEST: {
-    label: "HTTP Request Node",
-    icon: Globe,
-    badge: [],
-
+    appearance: setNodeAppearance("HTTP Request Node", Globe),
     config: setNodeDefaults(HTTP_REQUEST_SCHEMAS.CUSTOM_API),
     runtime: DEFAULT_RUNTIME,
     output: setNodeDefaults(HTTP_REQUEST_SCHEMAS.OUTPUT),
   },
 
   DATABASE: {
-    label: "Database Node",
-    icon: Database,
-    badge: [],
-
+    appearance: setNodeAppearance("Database Node", Database),
     config: setNodeDefaults(DATABASE_SCHEMAS.CONFIG),
     runtime: DEFAULT_RUNTIME,
     output: setNodeDefaults(DATABASE_SCHEMAS.OUTPUT),

@@ -35,11 +35,12 @@ type Bracket = Omit<React.ComponentPropsWithoutRef<"span">, "children"> &
 
 type BracketGroup = Omit<Bracket, "position">;
 
-export function Bracket({ position, color, size, className, ...props }: Bracket) {
+export function Bracket({ position, color, size, className, style, ...props }: Bracket) {
   return (
     <span
       style={{
         clipPath: "polygon(100% 0%, 20% 20%, 0% 100%, 0% 0%)",
+        ...style,
       }}
       className={cn(styles({ position, color, size, className }))}
       {...props}
