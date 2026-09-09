@@ -5,6 +5,24 @@ import z from "zod";
 import { Base } from "@/app/projects/test/_components/canvas/nodes/base/config";
 import { withOutputMeta, withConfigMeta } from "@/app/projects/test/_components/canvas/utils";
 
+export const HTTP_BADGE_CONFIG = [
+  "Mock",
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "Success",
+  "Failure",
+  "Delayed",
+  "Flaky",
+  "Timeout",
+  "JSON",
+  "Text",
+  "Empty",
+  "Error",
+] as const;
+
 const HTTP_METHOD = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"] as const;
 
 const HEADERS = {

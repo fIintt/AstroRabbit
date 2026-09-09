@@ -3,8 +3,14 @@ import z from "zod";
 import { Database, Globe } from "lucide-react";
 
 import { CanvasNode, NodeData } from "@/app/projects/test/_providers/editor/config";
-import { DATABASE_SCHEMAS } from "@/app/projects/test/_components/canvas/nodes/core/database/config";
-import { HTTP_REQUEST_SCHEMAS } from "@/app/projects/test/_components/canvas/nodes/core/http-request/config";
+import {
+  DATABASE_BADGE_CONFIG,
+  DATABASE_SCHEMAS,
+} from "@/app/projects/test/_components/canvas/nodes/core/database/config";
+import {
+  HTTP_BADGE_CONFIG,
+  HTTP_REQUEST_SCHEMAS,
+} from "@/app/projects/test/_components/canvas/nodes/core/http-request/config";
 import { setNodeAppearance, setNodeDefaults } from "@/app/projects/test/_components/canvas/utils";
 
 export const SETTINGS: Record<
@@ -45,6 +51,11 @@ export const NODE_DEFAULTS: {
     runtime: DEFAULT_RUNTIME,
     output: setNodeDefaults(DATABASE_SCHEMAS.OUTPUT),
   },
+};
+
+export const BADGE_CONFIG_TYPES: Record<CanvasNode["type"], readonly string[]> = {
+  HTTP_REQUEST: HTTP_BADGE_CONFIG,
+  DATABASE: DATABASE_BADGE_CONFIG,
 };
 
 export const CONFIG_SCHEMA_TYPES: Record<

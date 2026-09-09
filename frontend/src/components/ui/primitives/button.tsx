@@ -19,7 +19,7 @@ const hoverInsetStyles = {
 
 const styles = cva(
   [
-    "relative inline-flex cursor-pointer select-none items-center justify-center",
+    "relative inline-flex select-none items-center justify-center",
     "hover:text-ink active:scale-[0.98]",
     "disabled:text-ink disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none",
   ],
@@ -60,7 +60,7 @@ const styles = cva(
       size: "md",
       flush: false,
       brackets: false,
-      animated: false
+      animated: false,
     },
   },
 );
@@ -160,7 +160,7 @@ function renderInternalLink(btn: InternalLink) {
   const { ref, href, ...linkProps } = props;
 
   return (
-    <Link {...linkProps} ref={ref} href={href} className={classes}>
+    <Link {...linkProps} ref={ref} href={href} className={cn(classes, "cursor-pointer")}>
       {content}
     </Link>
   );
@@ -177,7 +177,7 @@ function renderExternalLink(btn: ExternalLink) {
       href={href}
       target={target}
       rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
-      className={classes}
+      className={cn(classes, "cursor-pointer")}
     >
       {content}
     </a>

@@ -5,6 +5,7 @@ import { useConnection, useStore } from "@xyflow/react";
 import { Clock } from "lucide-react";
 
 import {
+  MAX_VISIBLE_BADGES,
   STATUS_ICONS,
   type BaseNode,
 } from "@/app/projects/test/_components/canvas/nodes/base/config";
@@ -16,6 +17,7 @@ import {
 import { NodeLabel } from "@/app/projects/test/_components/canvas/nodes/base/label";
 import { useEditorAction } from "@/app/projects/test/_hooks/use-editor";
 import { toJSON, toString } from "@/app/projects/test/_components/layout/properties/utils";
+import { generateBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
 
 import { Diamond } from "@/components/ui/decorations/diamond";
 import { Shadow } from "@/components/ui/decorations/shadow";
@@ -24,7 +26,6 @@ import { Badge } from "@/components/ui/primitives/badge";
 
 import { cn } from "@/lib/utils/cn";
 import { formatText } from "@/lib/utils/formatText";
-import { randomBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
 
 export function BaseNode({ id, type, data, selected, className, handles, configIcons }: BaseNode) {
   const [isRenaming, setIsRenaming] = useState(false);
@@ -88,31 +89,29 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
               onChange={onLabelChange}
             />
 
-            <div
-              onWheel={(e) => {
-                const el = e.currentTarget;
-
-                if (el.scrollWidth > el.clientWidth) {
-                  e.stopPropagation();
-
-                  if (e.deltaY !== 0) {
-                    el.scrollLeft += e.deltaY;
-                  }
-                }
-              }}
-              className="nowheel flex w-full scrollbar-none items-center gap-x-2 overflow-x-auto"
-            >
-              <Badge size="sm" className={randomBadgeColor(formatText(type))}>
+            <div className="flex w-full items-center gap-x-1 overflow-x-hidden">
+              <Badge size="sm" className={generateBadgeColor(formatText(type))}>
                 {formatText(type)}
               </Badge>
 
-              {data.appearance.badge.map((badge) => {
+              {[...data.appearance.badge].slice(0, MAX_VISIBLE_BADGES).map((b) => {
                 return (
-                  <Badge key={`${id}-badge`} size="sm" title={badge} color="accent">
-                    {badge}
+                  <Badge
+                    key={b}
+                    size="sm"
+                    className={cn("max-w-12 inline truncate", generateBadgeColor(formatText(b)))}
+                  >
+                    {formatText(b)}
                   </Badge>
                 );
               })}
+
+              {data.appearance.badge.size > MAX_VISIBLE_BADGES && (
+                <Badge
+                  size="sm"
+                  className="opacity-60"
+                >{`+${data.appearance.badge.size - MAX_VISIBLE_BADGES}`}</Badge>
+              )}
             </div>
           </div>
 

@@ -6,6 +6,7 @@ import { CanvasNode } from "@/app/projects/test/_providers/editor/config";
 import { ExecutionStatus } from "@/app/projects/test/_providers/executor/config";
 import { NodeLabel } from "@/app/projects/test/_components/canvas/nodes/base/label";
 import { NodeStatus } from "@/app/projects/test/_components/canvas/nodes/base/config";
+import { generateBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
 
 import { Diamond } from "@/components/ui/decorations/diamond";
 import { Button } from "@/components/ui/primitives/button";
@@ -15,24 +16,24 @@ import { formatText } from "@/lib/utils/formatText";
 import { cn } from "@/lib/utils/cn";
 
 type PropertiesBanner = {
-  nodeId: string;
-  type: CanvasNode["type"];
-  icon: LucideIcon;
-  label: string;
+  nodeType: CanvasNode["type"];
+  nodeIcon: LucideIcon;
+  nodeLabel: string;
+  nodeBadges: Set<string>;
   nodeStatus: NodeStatus;
   executorStatus: ExecutionStatus;
   onClose: () => void;
   onLabelChange: (label: string) => void;
-  onExecute: (startAt: string) => void;
-  onNodeSkip: (nodeId: string) => void;
-  onDelete: (nodeId: string) => void;
+  onExecute: () => void;
+  onNodeSkip: () => void;
+  onDelete: () => void;
 };
 
 export function PropertiesBanner({
-  nodeId,
-  type,
-  icon: NodeIcon,
-  label,
+  nodeType,
+  nodeIcon: NodeIcon,
+  nodeLabel,
+  nodeBadges,
   nodeStatus,
   executorStatus,
   onClose,
@@ -43,25 +44,28 @@ export function PropertiesBanner({
 }: PropertiesBanner) {
   const [isRenaming, setIsRenaming] = useState(false);
 
+  const isExecutorRunning = executorStatus === "RUNNING";
+  const isNodeRunning = nodeStatus === "RUNNING";
+
   const ACTIONS = {
     EXECUTE: {
       icon: Play,
       className: "text-accent-ink hover:text-accent-ink/60 active:text-accent-ink/60",
-      disabled: executorStatus === "RUNNING" || nodeStatus === "RUNNING",
+      disabled: isExecutorRunning || isNodeRunning,
       fn: onExecute,
     },
 
     SKIP: {
       icon: FastForward,
       className: "text-warning-ink hover:text-warning-ink/60 active:text-warning-ink/60",
-      disabled: executorStatus !== "RUNNING" || nodeStatus !== "RUNNING",
+      disabled: !isExecutorRunning || !isNodeRunning,
       fn: onNodeSkip,
     },
 
     DELETE: {
       icon: Trash2,
       className: "",
-      disabled: executorStatus === "RUNNING",
+      disabled: isExecutorRunning,
       fn: onDelete,
     },
   } as const;
@@ -76,31 +80,44 @@ export function PropertiesBanner({
         </div>
 
         <div className="flex w-full min-w-0 flex-col items-start">
-          <div className="flex items-center gap-x-2">
+          <div className="flex w-full items-center gap-x-2">
             <Button aria-label="Rename node" onClick={() => setIsRenaming(true)} size="icon" flush>
               <PencilLine size={16} />
             </Button>
 
             <NodeLabel
-              label={label}
+              label={nodeLabel}
               onChange={onLabelChange}
               isRenaming={isRenaming}
               onRenamingChange={setIsRenaming}
             />
           </div>
 
-          <Badge color="accent">{formatText(type)}</Badge>
+          <div className="flex flex-wrap items-center gap-1">
+            <Badge className={generateBadgeColor(formatText(nodeType))}>
+              {formatText(nodeType)}
+            </Badge>
+
+            {[...nodeBadges].map((b) => {
+              return (
+                <Badge
+                  key={b}
+                  className={cn("inline max-w-24 truncate", generateBadgeColor(formatText(b)))}
+                >
+                  {formatText(b)}
+                </Badge>
+              );
+            })}
+          </div>
         </div>
 
         <Button
-          className="active:scale-90"
-          aria-label="Close panel"
+          className="hover:bg-destructive-ink/4 active:bg-destructive-ink/4 absolute top-0 right-0 border-2 p-0.5 active:scale-100"
           variant="destructive"
           size="icon"
-          flush
           onClick={onClose}
         >
-          <X size={24} />
+          <X size={16} className="text-destructive-ink" />
         </Button>
       </div>
 
@@ -115,7 +132,7 @@ export function PropertiesBanner({
               variant={isDestructive ? "destructive" : "normal"}
               flush
               disabled={v.disabled}
-              onClick={() => v.fn(nodeId)}
+              onClick={v.fn}
               className={cn(
                 "gap-x-2 font-medium tracking-wider uppercase transition-colors",
                 isDestructive && "ml-auto",

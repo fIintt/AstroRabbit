@@ -4,6 +4,7 @@ import { LucideIcon } from "lucide-react";
 
 import { ConfigFieldMeta, OutputFieldMeta } from "@/app/projects/test/_components/canvas/config";
 import { NodeData } from "@/app/projects/test/_providers/editor/config";
+import { NODE_COLOR_PALETTE } from "@/app/projects/test/_components/layout/properties/meta/config";
 
 const DEFAULT_CONFIG_FIELD_META: ConfigFieldMeta = {
   widget: "NONE",
@@ -45,7 +46,7 @@ export function resolveConfigSchema(
 }
 
 export function setNodeAppearance(label: string, icon: LucideIcon): NodeData["appearance"] {
-  return { label, icon, badge: [], color: "#16161a" };
+  return { label, icon, badge: new Set(), color: Object.values(NODE_COLOR_PALETTE)[0] };
 }
 
 export function setNodeDefaults<T extends z.ZodObject>(schema: T) {

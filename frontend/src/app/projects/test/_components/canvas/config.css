@@ -3,7 +3,8 @@
 @import "../../../../globals.css";
 
 @theme {
-  --animate-edge-running: edge-running 2s linear infinite
+  --animate-edge-running: edge-running 2s linear infinite;
+  --animate-shake-x: shake-x 0.2s ease-in-out;
 }
 
 .react-flow__pane {
@@ -28,5 +29,20 @@
   }
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+@keyframes shake-x {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-2px);
+  }
+  40%,
+  80% {
+    transform: translateX(2px);
   }
 }

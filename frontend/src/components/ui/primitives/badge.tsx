@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils/cn";
 import { cva, type VariantProps } from "@/lib/utils/cva";
 
 const styles = cva(
-  "font-medium uppercase inline-flex select-none items-center tracking-wider justify-center text-nowrap shrink-0",
+  "font-medium uppercase select-none inline-flex tracking-wider text-nowrap shrink-0",
   {
     variants: {
       size: {
@@ -34,7 +34,7 @@ type Badge = React.ComponentPropsWithoutRef<"span"> &
     children: React.ReactNode;
   };
 
-export function Badge({ children, color = "black", size, style, className, ...props }: Badge) {
+export function Badge({ children, color, size, style, className, ...props }: Badge) {
   return (
     <span
       className={cn(

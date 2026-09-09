@@ -3,8 +3,6 @@
 import { useCallback } from "react";
 
 import {
-  Background,
-  BackgroundVariant,
   Connection,
   ConnectionMode,
   Edge,
@@ -127,9 +125,7 @@ export function Canvas() {
           proOptions={{ hideAttribution: true }}
 
           className="outline-none"
-        >
-          <Background color="#5f5f6440" variant={BackgroundVariant.Cross} gap={40} />
-        </ReactFlow>
+        />
       </MainFrame>
     </div>
   );

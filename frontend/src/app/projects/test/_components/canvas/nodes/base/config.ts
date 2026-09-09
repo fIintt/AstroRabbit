@@ -69,7 +69,7 @@ export type Base<
   appearance: {
     label: string;
     icon: LucideIcon;
-    badge: string[];
+    badge: Set<string>;
     color: string;
   };
 
@@ -89,3 +89,6 @@ export type BaseNode = NodeProps<CanvasNode> & {
   configIcons: Record<string, LucideIcon>;
   handles: HandleType[];
 };
+
+export const MAX_VISIBLE_BADGES = 3;
+export const MAX_ACTIVE_BADGES = 6;

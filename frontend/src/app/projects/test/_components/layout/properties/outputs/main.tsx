@@ -1,7 +1,7 @@
 import z from "zod";
 
 import { Title } from "@/app/projects/test/_components/layout/properties/misc";
-import { randomBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
+import { generateBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
 import { CanvasNode, NodeData } from "@/app/projects/test/_providers/editor/config";
 import {
   OUTPUT_SCHEMA_TYPES,
@@ -93,7 +93,7 @@ export function PropertiesOutputs({ nodeType, output }: PropertiesOutputs) {
               <div key={key} className="relative space-y-2 pl-4">
                 <Diamond borderColor="black" className="absolute top-1.25 left-0" />
 
-                <Badge className={cn("border-0", randomBadgeColor(key))}>{key}</Badge>
+                <Badge className={cn("border-0", generateBadgeColor(key))}>{key}</Badge>
 
                 {hasGroup ? (
                   <div className="bg-ink/4 flex items-center gap-2 p-2 text-xs">

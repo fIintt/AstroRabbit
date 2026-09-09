@@ -10,7 +10,7 @@ import {
   nodeConfigRegistry,
   resolveConfigSchema,
 } from "@/app/projects/test/_components/canvas/utils";
-import { randomBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
+import { generateBadgeColor } from "@/app/projects/test/_components/layout/properties/config";
 import { CONFIG_WIDGET_TYPES } from "@/app/projects/test/_components/layout/properties/inputs/config";
 import { Title } from "@/app/projects/test/_components/layout/properties/misc";
 import { CanvasNode, NodeData } from "@/app/projects/test/_providers/editor/config";
@@ -88,7 +88,7 @@ export function PropertiesInputs({ nodeType, config, onPatch, onSet }: Propertie
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const delayRef = useRef<Record<string, NodeJS.Timeout>>({});
+  const delayRef = useRef<Record<string, NodeJS.Timeout | null>>({});
 
   const onChange = useCallback(
     (field: z.ZodType, k: string, v: unknown) => {
@@ -97,6 +97,8 @@ export function PropertiesInputs({ nodeType, config, onPatch, onSet }: Propertie
       if (timer) clearTimeout(timer);
 
       const timeout = setTimeout(() => {
+        delayRef.current[k] = null;
+
         if (k === "provider" && !(entry instanceof z.ZodObject)) {
           const nextSchema = entry[String(v)];
 
@@ -129,6 +131,7 @@ export function PropertiesInputs({ nodeType, config, onPatch, onSet }: Propertie
           delete next[k];
           return next;
         });
+
         onPatch(k, res.data);
       }, 500);
 
@@ -139,7 +142,7 @@ export function PropertiesInputs({ nodeType, config, onPatch, onSet }: Propertie
 
   useEffect(() => {
     return () => {
-      for (const timeout of Object.values(delayRef.current)) clearTimeout(timeout);
+      for (const timeout of Object.values(delayRef.current)) if (timeout) clearTimeout(timeout);
     };
   }, []);
 
@@ -159,7 +162,7 @@ export function PropertiesInputs({ nodeType, config, onPatch, onSet }: Propertie
             <div key={key} className="relative space-y-2 pl-4">
               <Diamond borderColor="black" className="absolute top-1.25 left-0" />
 
-              <Badge className={cn("border-0", randomBadgeColor(key))}>{formatText(key)}</Badge>
+              <Badge className={cn("border-0", generateBadgeColor(key))}>{formatText(key)}</Badge>
 
               <Widget
                 meta={meta}
