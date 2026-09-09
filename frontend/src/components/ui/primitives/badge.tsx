@@ -37,6 +37,7 @@ type Badge = React.ComponentPropsWithoutRef<"span"> &
 export function Badge({ children, color, size, style, className, ...props }: Badge) {
   return (
     <span
+      style={style}
       className={cn(
         styles({
           color,

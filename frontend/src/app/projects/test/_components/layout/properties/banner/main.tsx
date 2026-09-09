@@ -112,6 +112,7 @@ export function PropertiesBanner({
         </div>
 
         <Button
+          aria-label="Close panel"
           className="hover:bg-destructive-ink/4 active:bg-destructive-ink/4 absolute top-0 right-0 border-2 p-0.5 active:scale-100"
           variant="destructive"
           size="icon"

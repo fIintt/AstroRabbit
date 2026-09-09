@@ -90,7 +90,13 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
             />
 
             <div className="flex w-full items-center gap-x-1 overflow-x-hidden">
-              <Badge size="sm" className={generateBadgeColor(formatText(type))}>
+              <Badge
+                style={{
+                  color: data.appearance.color,
+                  backgroundColor: `color-mix(in srgb, ${data.appearance.color} 10%, transparent)`,
+                }}
+                size="sm"
+              >
                 {formatText(type)}
               </Badge>
 
@@ -99,7 +105,7 @@ export function BaseNode({ id, type, data, selected, className, handles, configI
                   <Badge
                     key={b}
                     size="sm"
-                    className={cn("max-w-12 inline truncate", generateBadgeColor(formatText(b)))}
+                    className={cn("inline max-w-12 truncate", generateBadgeColor(formatText(b)))}
                   >
                     {formatText(b)}
                   </Badge>
